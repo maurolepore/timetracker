@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 # timetracker
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/maurolepore/timetracker/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/maurolepore/timetracker/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of timetracker is to help you work with data from the [GoogleSheets

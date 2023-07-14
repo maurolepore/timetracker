@@ -4,6 +4,8 @@
 # timetracker
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/maurolepore/timetracker/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/maurolepore/timetracker/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of timetracker is to help you work with data from the
@@ -46,12 +48,12 @@ tail(raw)
 #> # A tibble: 6 × 4
 #>   `Case Ref#`                 `Start Time`        `Stop Time`         Difference
 #>   <chr>                       <dttm>              <dttm>              <chr>     
-#> 1 TiltDevProjectMGMT#115 est… 2023-07-14 10:14:31 2023-07-14 12:49:57 02:35:25  
-#> 2 TiltDevProjectMGMT#115 est… 2023-07-14 12:49:59 2023-07-14 13:54:40 01:04:41  
-#> 3 TiltDevProjectMGMT#115 est… 2023-07-14 13:55:48 2023-07-14 16:28:03 02:32:16  
-#> 4 Other                       2023-07-14 17:01:16 2023-07-14 17:25:33 00:24:17  
-#> 5 Other                       2023-07-14 17:25:44 2023-07-14 17:27:13 00:01:30  
-#> 6 <NA>                        2023-07-14 17:27:16 NA                  <NA>
+#> 1 TiltDevProjectMGMT#115 est… 2023-07-14 13:55:48 2023-07-14 16:28:03 02:32:16  
+#> 2 Other                       2023-07-14 17:01:16 2023-07-14 17:25:33 00:24:17  
+#> 3 Other                       2023-07-14 17:25:44 2023-07-14 17:27:13 00:01:30  
+#> 4 Other                       2023-07-14 17:27:16 2023-07-14 17:42:43 00:15:26  
+#> 5 Other                       2023-07-14 17:42:58 2023-07-14 17:43:19 00:00:21  
+#> 6 <NA>                        2023-07-14 17:43:22 NA                  <NA>
 ```
 
 Wrangle the data with timetracker.
@@ -63,12 +65,12 @@ tail(time)
 #> # A tibble: 6 × 5
 #>   date       case_ref_number  start_time          stop_time           difference
 #>   <date>     <chr>            <dttm>              <dttm>              <drtn>    
-#> 1 2023-07-14 TiltDevProjectM… 2023-07-14 10:10:28 2023-07-14 10:14:29 0.0668311…
-#> 2 2023-07-14 TiltDevProjectM… 2023-07-14 10:14:31 2023-07-14 12:49:57 2.5903547…
-#> 3 2023-07-14 TiltDevProjectM… 2023-07-14 12:49:59 2023-07-14 13:54:40 1.0780719…
-#> 4 2023-07-14 TiltDevProjectM… 2023-07-14 13:55:48 2023-07-14 16:28:03 2.5377011…
-#> 5 2023-07-14 Other            2023-07-14 17:01:16 2023-07-14 17:25:33 0.4048222…
-#> 6 2023-07-14 Other            2023-07-14 17:25:44 2023-07-14 17:27:13 0.0248936…
+#> 1 2023-07-14 TiltDevProjectM… 2023-07-14 12:49:59 2023-07-14 13:54:40 1.0780719…
+#> 2 2023-07-14 TiltDevProjectM… 2023-07-14 13:55:48 2023-07-14 16:28:03 2.5377011…
+#> 3 2023-07-14 Other            2023-07-14 17:01:16 2023-07-14 17:25:33 0.4048222…
+#> 4 2023-07-14 Other            2023-07-14 17:25:44 2023-07-14 17:27:13 0.0248936…
+#> 5 2023-07-14 Other            2023-07-14 17:27:16 2023-07-14 17:42:43 0.2573330…
+#> 6 2023-07-14 Other            2023-07-14 17:42:58 2023-07-14 17:43:19 0.0057069…
 ```
 
 Analyze the data with familiar tidyverse packages.
@@ -86,7 +88,7 @@ time |>
 #> 2 Other                           2023-07-13 0.16576806 hours
 #> 3 TiltDevProjectMGMT#115 estimate 2023-07-13 1.50000000 hours
 #> 4 TiltDevProjectMGMT#115 estimate 2023-07-14 5.84217972 hours
-#> 5 Other                           2023-07-14 0.02489361 hours
+#> 5 Other                           2023-07-14 0.03060056 hours
 
 # Time spent across all tasks the last day
 time |>
@@ -95,5 +97,5 @@ time |>
 #> # A tibble: 1 × 2
 #>   date       spent         
 #>   <date>     <drtn>        
-#> 1 2023-07-14 7.429235 hours
+#> 1 2023-07-14 7.692275 hours
 ```
