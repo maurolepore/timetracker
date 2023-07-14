@@ -36,9 +36,9 @@ pak::pak("maurolepore/timetracker")
 ## Example
 
 ```{r example}
+library(dplyr, warn.conflicts = FALSE)
 library(googlesheets4)
 library(timetracker)
-library(tidyverse)
 ```
 
 Read your google sheet with googlesheets4.
@@ -67,8 +67,8 @@ time |>
   filter(date == tail(unique(date), week)) |> 
   summarise(spent = sum(difference), .by = c("case_ref_number", "date"))
 
-# Time spent across all tasks today
+# Time spent across all tasks the last day
 time |>
-  filter(date == today()) |> 
+  filter(date == last(date)) |> 
   summarise(spent = sum(difference), .by = "date")
 ```
