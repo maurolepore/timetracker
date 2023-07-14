@@ -50,14 +50,15 @@ time <- raw |>
   janitor::clean_names() |>
   # Pick done
   filter(!is.na(start_time), !is.na(stop_time)) |> 
-  mutate(difference = make_difftime(stop_time - start_time, units = "hour")) |> 
+  mutate(difference = make_difftime(stop_time - start_time, units = "hour")) |>
   # Add date
-  mutate(date = date(start_time))
+  mutate(date = date(start_time)) |> 
+  relocate(date)
 time
 ```
 
 ```{r}
 time |> 
-  group_by(case_ref_number, date) |> 
+  group_by(case_ref_number) |> 
   summarise(difference = sum(difference))
 ```
