@@ -36,33 +36,39 @@ pak::pak("maurolepore/timetracker")
 ## Example
 
 ```{r example}
-library(timetracker)
 library(googlesheets4)
-library(dplyr, warn.conflicts = FALSE)
-library(forcats)
-library(ggplot2)
-
-url <- "https://docs.google.com/spreadsheets/d/1Pz9_Dn24DPpWpEXFggSwZJWSp0DHtYbgpeS1_90KtEA/edit?usp=sharing"
-
-time <- url |>
-  # Read your google sheet with googlesheets4
-  read_sheet() |>
-  # Wrangle the data with timetracker
-  timetracker::wrangle()
-
-time
-
-# Analyze the data with familiar tidyverse packages
-summary <- time |>
-  group_by(case_ref_number) |>
-  summarise(difference = sum(difference))
-
-summary
-
-p <- summary |>
-  ggplot() +
-  geom_col(aes(fct_reorder(case_ref_number, difference), difference))
-
-p
+library(timetracker)
+library(tidyverse)
 ```
 
+Read your google sheet with googlesheets4.
+
+```{r}
+url <- "https://docs.google.com/spreadsheets/d/1Pz9_Dn24DPpWpEXFggSwZJWSp0DHtYbgpeS1_90KtEA/edit?usp=sharing"
+raw <- read_sheet(url)
+
+tail(raw)
+```
+
+Wrangle the data with timetracker.
+
+```{r}
+time <- timetracker::wrangle(raw)
+
+tail(time)
+```
+
+Analyze the data with familiar tidyverse packages.
+
+```{r}
+# Time spent by task in the last week
+week <- 7
+time |>
+  filter(date == tail(unique(date), week)) |> 
+  summarise(spent = sum(difference), .by = c("case_ref_number"))
+
+# Time spent across all tasks today
+time |>
+  filter(date == today()) |> 
+  summarise(spent = sum(difference), .by = "date")
+```
