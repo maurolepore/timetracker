@@ -65,7 +65,7 @@ Analyze the data with familiar tidyverse packages.
 week <- 7
 time |>
   filter(date == tail(unique(date), week)) |> 
-  summarise(spent = sum(difference), .by = c("case_ref_number"))
+  summarise(spent = sum(difference), .by = c("case_ref_number", "date"))
 
 # Time spent across all tasks today
 time |>
