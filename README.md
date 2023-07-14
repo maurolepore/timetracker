@@ -19,6 +19,22 @@ You can install the development version of timetracker with:
 pak::pak("maurolepore/timetracker")
 ```
 
+## TODO Move to R/
+
+``` r
+wrangle_timetracker <- function(data) {
+  raw |> 
+    # Wrangle
+    clean_names() |>
+    # Pick done
+    filter(!is.na(start_time), !is.na(stop_time)) |> 
+    mutate(difference = make_difftime(stop_time - start_time, units = "hour")) |>
+    # Add date
+    mutate(date = date(start_time)) |> 
+    relocate(date)
+}
+```
+
 ## Example
 
 ``` r
@@ -44,6 +60,8 @@ library(janitor)
 library(timetracker)
 ```
 
+Read your google sheet with googlesheets4.
+
 ``` r
 url <- "https://docs.google.com/spreadsheets/d/1Pz9_Dn24DPpWpEXFggSwZJWSp0DHtYbgpeS1_90KtEA/edit?usp=sharing"
 raw <- read_sheet(url)
@@ -56,19 +74,30 @@ raw <- read_sheet(url)
 #>   'maurolepore@gmail.com'.
 #> ✔ Reading from "time-tracker".
 #> ✔ Range 'Sheet1'.
+
+raw
+#> # A tibble: 22 × 4
+#>    `Case Ref#`                `Start Time`        `Stop Time`         Difference
+#>    <chr>                      <dttm>              <dttm>              <chr>     
+#>  1 Meeting                    2023-07-13 05:00:00 2023-07-13 05:40:00 00:40:00  
+#>  2 Other                      2023-07-13 05:40:00 2023-07-13 05:51:10 00:11:10  
+#>  3 Other                      2023-07-13 05:53:23 2023-07-13 05:53:25 00:00:02  
+#>  4 Meeting                    2023-07-13 07:31:11 2023-07-13 09:48:35 02:17:24  
+#>  5 Other                      2023-07-13 10:04:58 2023-07-13 10:14:53 00:09:55  
+#>  6 TiltDevProjectMGMT#115 es… 2023-07-13 10:52:17 2023-07-13 11:58:49 01:06:32  
+#>  7 TiltDevProjectMGMT#115 es… 2023-07-13 14:00:00 2023-07-13 15:30:00 01:30:00  
+#>  8 TiltDevProjectMGMT#115 es… 2023-07-13 16:12:42 2023-07-13 16:30:36 00:17:53  
+#>  9 TiltDevProjectMGMT#115 es… 2023-07-14 06:07:39 2023-07-14 06:08:12 00:00:33  
+#> 10 TiltDevProjectMGMT#115 es… 2023-07-14 06:08:14 2023-07-14 06:44:46 00:36:32  
+#> # ℹ 12 more rows
 ```
 
+Wrangle the data with the timetracker package.
+
 ``` r
-time <- raw |> 
-  # Wrangle
-  clean_names() |>
-  # Pick done
-  filter(!is.na(start_time), !is.na(stop_time)) |> 
-  mutate(difference = make_difftime(stop_time - start_time, units = "hour")) |>
-  # Add date
-  mutate(date = date(start_time)) |> 
-  relocate(date)
-time
+wrangled <- wrangle_timetracker(raw)
+
+wrangled
 #> # A tibble: 21 × 5
 #>    date       case_ref_number start_time          stop_time           difference
 #>    <date>     <chr>           <dttm>              <dttm>              <drtn>    
@@ -85,10 +114,14 @@ time
 #> # ℹ 11 more rows
 ```
 
+Analyze the data with the tidyverse.
+
 ``` r
-time |> 
+summary <- wrangled |> 
   group_by(case_ref_number) |> 
   summarise(difference = sum(difference))
+
+summary
 #> # A tibble: 3 × 2
 #>   case_ref_number                 difference    
 #>   <chr>                           <drtn>        
@@ -96,3 +129,13 @@ time |>
 #> 2 Other                           0.351890 hours
 #> 3 TiltDevProjectMGMT#115 estimate 3.700379 hours
 ```
+
+``` r
+summary |> 
+  mutate(case_ref_number = fct_reorder(case_ref_number, difference)) |> 
+  ggplot() + geom_col(aes(case_ref_number, difference))
+#> Don't know how to automatically pick scale for object of type <difftime>.
+#> Defaulting to continuous.
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
