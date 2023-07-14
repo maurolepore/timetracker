@@ -1,5 +1,7 @@
 ---
 output: github_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -32,5 +34,30 @@ pak::pak("maurolepore/tiltSprint")
 ## Example
 
 ```{r example}
+library(tidyverse)
+library(googlesheets4)
 library(tiltSprint)
+```
+
+```{r}
+url <- "https://docs.google.com/spreadsheets/d/1Pz9_Dn24DPpWpEXFggSwZJWSp0DHtYbgpeS1_90KtEA/edit?usp=sharing"
+raw <- read_sheet(url)
+```
+
+```{r}
+time <- raw |> 
+  # Wrangle
+  janitor::clean_names() |>
+  # Pick done
+  filter(!is.na(start_time), !is.na(stop_time)) |> 
+  mutate(difference = make_difftime(stop_time - start_time, units = "hour")) |> 
+  # Add date
+  mutate(date = date(start_time))
+time
+```
+
+```{r}
+time |> 
+  group_by(case_ref_number, date) |> 
+  summarise(difference = sum(difference))
 ```
