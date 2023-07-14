@@ -36,6 +36,7 @@ pak::pak("maurolepore/tiltSprint")
 ```{r example}
 library(tidyverse)
 library(googlesheets4)
+library(janitor)
 library(tiltSprint)
 ```
 
@@ -47,7 +48,7 @@ raw <- read_sheet(url)
 ```{r}
 time <- raw |> 
   # Wrangle
-  janitor::clean_names() |>
+  clean_names() |>
   # Pick done
   filter(!is.na(start_time), !is.na(stop_time)) |> 
   mutate(difference = make_difftime(stop_time - start_time, units = "hour")) |>

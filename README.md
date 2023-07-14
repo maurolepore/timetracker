@@ -32,6 +32,13 @@ library(tidyverse)
 #> ✖ dplyr::lag()    masks stats::lag()
 #> ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 library(googlesheets4)
+library(janitor)
+#> 
+#> Attaching package: 'janitor'
+#> 
+#> The following objects are masked from 'package:stats':
+#> 
+#>     chisq.test, fisher.test
 library(tiltSprint)
 ```
 
@@ -52,7 +59,7 @@ raw <- read_sheet(url)
 ``` r
 time <- raw |> 
   # Wrangle
-  janitor::clean_names() |>
+  clean_names() |>
   # Pick done
   filter(!is.na(start_time), !is.na(stop_time)) |> 
   mutate(difference = make_difftime(stop_time - start_time, units = "hour")) |>
