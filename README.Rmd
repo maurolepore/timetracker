@@ -33,60 +33,31 @@ You can install the development version of timetracker with:
 pak::pak("maurolepore/timetracker")
 ```
 
-## TODO Move to R/
-
-```{r}
-wrangle <- function(data) {
-  raw |> 
-    # Wrangle
-    clean_names() |>
-    # Pick done
-    filter(!is.na(start_time), !is.na(stop_time)) |> 
-    mutate(difference = make_difftime(stop_time - start_time, units = "hour")) |>
-    # Add date
-    mutate(date = date(start_time)) |> 
-    relocate(date)
-}
-```
-
 ## Example
 
 ```{r example}
-library(tidyverse)
-library(googlesheets4)
-library(janitor)
 library(timetracker)
-```
+library(googlesheets4)
+library(dplyr, warn.conflicts = FALSE)
+library(forcats)
+library(ggplot2)
 
-Read your google sheet with googlesheets4.
-
-```{r}
 url <- "https://docs.google.com/spreadsheets/d/1Pz9_Dn24DPpWpEXFggSwZJWSp0DHtYbgpeS1_90KtEA/edit?usp=sharing"
-raw <- read_sheet(url)
 
-raw
-```
+time <- url |> 
+  # Read your google sheet with googlesheets4
+  read_sheet() |> 
+  # Wrangle the data with timetracker
+  timetracker::wrangle()
+time
 
-Wrangle the data with the timetracker package.
-
-```{r}
-wrangled <- wrangle(raw)
-
-wrangled
-```
-
-Analyze the data with the tidyverse.
-
-```{r}
-summary <- wrangled |> 
+# Analyze the data with familiar tidyverse packages
+summary <- time |> 
   group_by(case_ref_number) |> 
   summarise(difference = sum(difference))
-
 summary
-```
 
-```{r}
-ggplot(summary) + 
-  geom_col(aes(fct_reorder(case_ref_number, difference), difference))
+summary |> 
+  ggplot() + geom_col(aes(fct_reorder(case_ref_number, difference), difference))
 ```
 

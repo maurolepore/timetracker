@@ -19,52 +19,22 @@ You can install the development version of timetracker with:
 pak::pak("maurolepore/timetracker")
 ```
 
-## TODO Move to R/
-
-``` r
-wrangle <- function(data) {
-  raw |> 
-    # Wrangle
-    clean_names() |>
-    # Pick done
-    filter(!is.na(start_time), !is.na(stop_time)) |> 
-    mutate(difference = make_difftime(stop_time - start_time, units = "hour")) |>
-    # Add date
-    mutate(date = date(start_time)) |> 
-    relocate(date)
-}
-```
-
 ## Example
 
 ``` r
-library(tidyverse)
-#> ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-#> ✔ dplyr     1.1.2     ✔ readr     2.1.4
-#> ✔ forcats   1.0.0     ✔ stringr   1.5.0
-#> ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
-#> ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-#> ✔ purrr     1.0.1     
-#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-#> ✖ dplyr::filter() masks stats::filter()
-#> ✖ dplyr::lag()    masks stats::lag()
-#> ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-library(googlesheets4)
-library(janitor)
-#> 
-#> Attaching package: 'janitor'
-#> 
-#> The following objects are masked from 'package:stats':
-#> 
-#>     chisq.test, fisher.test
 library(timetracker)
-```
+library(googlesheets4)
+library(dplyr, warn.conflicts = FALSE)
+library(forcats)
+library(ggplot2)
 
-Read your google sheet with googlesheets4.
-
-``` r
 url <- "https://docs.google.com/spreadsheets/d/1Pz9_Dn24DPpWpEXFggSwZJWSp0DHtYbgpeS1_90KtEA/edit?usp=sharing"
-raw <- read_sheet(url)
+
+time <- url |> 
+  # Read your google sheet with googlesheets4
+  read_sheet() |> 
+  # Wrangle the data with timetracker
+  timetracker::wrangle()
 #> ! Using an auto-discovered, cached token.
 #>   To suppress this message, modify your code or options to clearly consent to
 #>   the use of a cached token.
@@ -74,30 +44,7 @@ raw <- read_sheet(url)
 #>   'maurolepore@gmail.com'.
 #> ✔ Reading from "time-tracker".
 #> ✔ Range 'Sheet1'.
-
-raw
-#> # A tibble: 22 × 4
-#>    `Case Ref#`                `Start Time`        `Stop Time`         Difference
-#>    <chr>                      <dttm>              <dttm>              <chr>     
-#>  1 Meeting                    2023-07-13 05:00:00 2023-07-13 05:40:00 00:40:00  
-#>  2 Other                      2023-07-13 05:40:00 2023-07-13 05:51:10 00:11:10  
-#>  3 Other                      2023-07-13 05:53:23 2023-07-13 05:53:25 00:00:02  
-#>  4 Meeting                    2023-07-13 07:31:11 2023-07-13 09:48:35 02:17:24  
-#>  5 Other                      2023-07-13 10:04:58 2023-07-13 10:14:53 00:09:55  
-#>  6 TiltDevProjectMGMT#115 es… 2023-07-13 10:52:17 2023-07-13 11:58:49 01:06:32  
-#>  7 TiltDevProjectMGMT#115 es… 2023-07-13 14:00:00 2023-07-13 15:30:00 01:30:00  
-#>  8 TiltDevProjectMGMT#115 es… 2023-07-13 16:12:42 2023-07-13 16:30:36 00:17:53  
-#>  9 TiltDevProjectMGMT#115 es… 2023-07-14 06:07:39 2023-07-14 06:08:12 00:00:33  
-#> 10 TiltDevProjectMGMT#115 es… 2023-07-14 06:08:14 2023-07-14 06:44:46 00:36:32  
-#> # ℹ 12 more rows
-```
-
-Wrangle the data with the timetracker package.
-
-``` r
-wrangled <- wrangle(raw)
-
-wrangled
+time
 #> # A tibble: 21 × 5
 #>    date       case_ref_number start_time          stop_time           difference
 #>    <date>     <chr>           <dttm>              <dttm>              <drtn>    
@@ -112,15 +59,11 @@ wrangled
 #>  9 2023-07-14 TiltDevProject… 2023-07-14 06:07:39 2023-07-14 06:08:12 0.0091425…
 #> 10 2023-07-14 TiltDevProject… 2023-07-14 06:08:14 2023-07-14 06:44:46 0.6089452…
 #> # ℹ 11 more rows
-```
 
-Analyze the data with the tidyverse.
-
-``` r
-summary <- wrangled |> 
+# Analyze the data with familiar tidyverse packages
+summary <- time |> 
   group_by(case_ref_number) |> 
   summarise(difference = sum(difference))
-
 summary
 #> # A tibble: 3 × 2
 #>   case_ref_number                 difference    
@@ -128,13 +71,11 @@ summary
 #> 1 Meeting                         2.956692 hours
 #> 2 Other                           0.351890 hours
 #> 3 TiltDevProjectMGMT#115 estimate 3.700379 hours
-```
 
-``` r
-ggplot(summary) + 
-  geom_col(aes(fct_reorder(case_ref_number, difference), difference))
+summary |> 
+  ggplot() + geom_col(aes(fct_reorder(case_ref_number, difference), difference))
 #> Don't know how to automatically pick scale for object of type <difftime>.
 #> Defaulting to continuous.
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-example-1.png" width="100%" />
