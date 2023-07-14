@@ -1,20 +1,20 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tiltSprint
+# timetracker
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of tiltSprint is to help you manage your tilt sprints.
+The goal of timetracker is to help you manage your tilt sprints.
 
 ## Installation
 
-You can install the development version of tiltSprint with:
+You can install the development version of timetracker with:
 
 ``` r
 # install.packages("pak")
-pak::pak("maurolepore/tiltSprint")
+pak::pak("maurolepore/timetracker")
 ```
 
 ## Example
@@ -39,7 +39,7 @@ library(janitor)
 #> The following objects are masked from 'package:stats':
 #> 
 #>     chisq.test, fisher.test
-library(tiltSprint)
+library(timetracker)
 ```
 
 ``` r
