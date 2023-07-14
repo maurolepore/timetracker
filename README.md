@@ -44,6 +44,7 @@ time <- url |>
 #>   'maurolepore@gmail.com'.
 #> ✔ Reading from "time-tracker".
 #> ✔ Range 'Sheet1'.
+
 time
 #> # A tibble: 21 × 5
 #>    date       case_ref_number start_time          stop_time           difference
@@ -64,6 +65,7 @@ time
 summary <- time |> 
   group_by(case_ref_number) |> 
   summarise(difference = sum(difference))
+
 summary
 #> # A tibble: 3 × 2
 #>   case_ref_number                 difference    
@@ -72,8 +74,10 @@ summary
 #> 2 Other                           0.351890 hours
 #> 3 TiltDevProjectMGMT#115 estimate 3.700379 hours
 
-summary |> 
+p <- summary |> 
   ggplot() + geom_col(aes(fct_reorder(case_ref_number, difference), difference))
+
+p
 #> Don't know how to automatically pick scale for object of type <difftime>.
 #> Defaulting to continuous.
 ```
