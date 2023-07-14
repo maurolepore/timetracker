@@ -30,9 +30,9 @@ library(ggplot2)
 
 url <- "https://docs.google.com/spreadsheets/d/1Pz9_Dn24DPpWpEXFggSwZJWSp0DHtYbgpeS1_90KtEA/edit?usp=sharing"
 
-time <- url |> 
+time <- url |>
   # Read your google sheet with googlesheets4
-  read_sheet() |> 
+  read_sheet() |>
   # Wrangle the data with timetracker
   timetracker::wrangle()
 #> ! Using an auto-discovered, cached token.
@@ -62,8 +62,8 @@ time
 #> # ℹ 11 more rows
 
 # Analyze the data with familiar tidyverse packages
-summary <- time |> 
-  group_by(case_ref_number) |> 
+summary <- time |>
+  group_by(case_ref_number) |>
   summarise(difference = sum(difference))
 
 summary
@@ -74,8 +74,9 @@ summary
 #> 2 Other                           0.351890 hours
 #> 3 TiltDevProjectMGMT#115 estimate 3.700379 hours
 
-p <- summary |> 
-  ggplot() + geom_col(aes(fct_reorder(case_ref_number, difference), difference))
+p <- summary |>
+  ggplot() +
+  geom_col(aes(fct_reorder(case_ref_number, difference), difference))
 
 p
 #> Don't know how to automatically pick scale for object of type <difftime>.

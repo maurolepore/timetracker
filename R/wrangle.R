@@ -12,7 +12,8 @@ wrangle <- function(data) {
     clean_names() |>
     filter(!is.na(.data$start_time), !is.na(.data$stop_time)) |>
     mutate(difference = make_difftime(
-        .data$stop_time - .data$start_time, units = "hour"
+      .data$stop_time - .data$start_time,
+      units = "hour"
     )) |>
     mutate(date = date(.data$start_time)) |>
     relocate("date")

@@ -44,23 +44,24 @@ library(ggplot2)
 
 url <- "https://docs.google.com/spreadsheets/d/1Pz9_Dn24DPpWpEXFggSwZJWSp0DHtYbgpeS1_90KtEA/edit?usp=sharing"
 
-time <- url |> 
+time <- url |>
   # Read your google sheet with googlesheets4
-  read_sheet() |> 
+  read_sheet() |>
   # Wrangle the data with timetracker
   timetracker::wrangle()
 
 time
 
 # Analyze the data with familiar tidyverse packages
-summary <- time |> 
-  group_by(case_ref_number) |> 
+summary <- time |>
+  group_by(case_ref_number) |>
   summarise(difference = sum(difference))
 
 summary
 
-p <- summary |> 
-  ggplot() + geom_col(aes(fct_reorder(case_ref_number, difference), difference))
+p <- summary |>
+  ggplot() +
+  geom_col(aes(fct_reorder(case_ref_number, difference), difference))
 
 p
 ```
