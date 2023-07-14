@@ -77,7 +77,7 @@ Analyze the data with familiar tidyverse packages.
 # Time spent by task in the last week
 week <- 7
 time |>
-  filter(date == tail(unique(date), week)) |> 
+  filter(date == tail(unique(date), week)) |>
   summarise(spent = sum(difference), .by = c("case_ref_number", "date"))
 #> # A tibble: 5 × 3
 #>   case_ref_number                 date       spent           
@@ -90,7 +90,7 @@ time |>
 
 # Time spent across all tasks the last day
 time |>
-  filter(date == last(date)) |> 
+  filter(date == last(date)) |>
   summarise(spent = sum(difference), .by = "date")
 #> # A tibble: 1 × 2
 #>   date       spent         
