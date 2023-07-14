@@ -22,7 +22,7 @@ pak::pak("maurolepore/timetracker")
 ## TODO Move to R/
 
 ``` r
-wrangle_timetracker <- function(data) {
+wrangle <- function(data) {
   raw |> 
     # Wrangle
     clean_names() |>
@@ -95,7 +95,7 @@ raw
 Wrangle the data with the timetracker package.
 
 ``` r
-wrangled <- wrangle_timetracker(raw)
+wrangled <- wrangle(raw)
 
 wrangled
 #> # A tibble: 21 × 5
@@ -131,9 +131,8 @@ summary
 ```
 
 ``` r
-summary |> 
-  mutate(case_ref_number = fct_reorder(case_ref_number, difference)) |> 
-  ggplot() + geom_col(aes(case_ref_number, difference))
+ggplot(summary) + 
+  geom_col(aes(fct_reorder(case_ref_number, difference), difference))
 #> Don't know how to automatically pick scale for object of type <difftime>.
 #> Defaulting to continuous.
 ```
