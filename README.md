@@ -46,14 +46,14 @@ raw <- read_sheet(url)
 
 tail(raw)
 #> # A tibble: 6 × 4
-#>   `Case Ref#` `Start Time`        `Stop Time`         Difference
-#>   <chr>       <dttm>              <dttm>              <chr>     
-#> 1 Other       2023-07-17 10:18:17 2023-07-17 12:02:39 01:44:22  
-#> 2 Meeting     2023-07-17 11:30:44 2023-07-17 12:03:00 00:32:16  
-#> 3 Meeting     2023-07-17 12:03:03 2023-07-17 13:59:55 01:56:52  
-#> 4 Other       2023-07-17 14:26:33 2023-07-17 14:43:05 00:16:32  
-#> 5 Review      2023-07-17 17:28:10 2023-07-17 18:28:12 01:00:03  
-#> 6 Review      2023-07-17 18:28:14 2023-07-17 19:09:28 00:41:14
+#>   `Case Ref#`           `Start Time`        `Stop Time`         Difference
+#>   <chr>                 <dttm>              <dttm>              <chr>     
+#> 1 tilt#29, architecture 2023-08-06 16:23:05 2023-08-06 16:45:02 00:21:57  
+#> 2 tilt#29, architecture 2023-08-06 18:54:24 2023-08-06 20:20:47 01:26:23  
+#> 3 tilt#29, architecture 2023-08-07 05:12:16 2023-08-07 05:39:29 00:27:13  
+#> 4 Other                 2023-08-07 09:45:55 2023-08-07 09:52:09 00:06:15  
+#> 5 tilt#31, architecture 2023-08-07 10:15:12 2023-08-07 10:15:15 00:00:02  
+#> 6 Other                 2023-08-07 10:15:17 NA                  <NA>
 ```
 
 Wrangle the data with timetracker.
@@ -63,41 +63,44 @@ time <- timetracker::wrangle(raw)
 
 tail(time)
 #> # A tibble: 6 × 5
-#>   date       case_ref_number start_time          stop_time           difference 
-#>   <date>     <chr>           <dttm>              <dttm>              <drtn>     
-#> 1 2023-07-17 Other           2023-07-17 10:18:17 2023-07-17 12:02:39 1.7394133 …
-#> 2 2023-07-17 Meeting         2023-07-17 11:30:44 2023-07-17 12:03:00 0.5378278 …
-#> 3 2023-07-17 Meeting         2023-07-17 12:03:03 2023-07-17 13:59:55 1.9478808 …
-#> 4 2023-07-17 Other           2023-07-17 14:26:33 2023-07-17 14:43:05 0.2754378 …
-#> 5 2023-07-17 Review          2023-07-17 17:28:10 2023-07-17 18:28:12 1.0007322 …
-#> 6 2023-07-17 Review          2023-07-17 18:28:14 2023-07-17 19:09:28 0.6872436 …
+#>   date       case_ref_number  start_time          stop_time           difference
+#>   <date>     <chr>            <dttm>              <dttm>              <drtn>    
+#> 1 2023-08-04 tiltData#265, t… 2023-08-04 11:26:08 2023-08-04 12:00:01 0.5646591…
+#> 2 2023-08-06 tilt#29, archit… 2023-08-06 16:23:05 2023-08-06 16:45:02 0.3657244…
+#> 3 2023-08-06 tilt#29, archit… 2023-08-06 18:54:24 2023-08-06 20:20:47 1.4397338…
+#> 4 2023-08-07 tilt#29, archit… 2023-08-07 05:12:16 2023-08-07 05:39:29 0.4536219…
+#> 5 2023-08-07 Other            2023-08-07 09:45:55 2023-08-07 09:52:09 0.1040491…
+#> 6 2023-08-07 tilt#31, archit… 2023-08-07 10:15:12 2023-08-07 10:15:15 0.0006816…
 ```
 
-Analyze the data with familiar tidyverse packages.
+Time spent by task recently
 
 ``` r
-# Time spent by task recently
-time |>
-  summarise(spent = sum(difference), .by = c("case_ref_number", "date")) |> 
+time |> 
+  filter(date >= "2023-08-07") |>
+  summarise(spent = sum(difference), .by = c("case_ref_number")) |> 
   tail()
-#> # A tibble: 6 × 3
-#>   case_ref_number                 date       spent          
-#>   <chr>                           <date>     <drtn>         
-#> 1 TiltDevProjectMGMT#115 estimate 2023-07-13 2.9069869 hours
-#> 2 TiltDevProjectMGMT#115 estimate 2023-07-14 6.9995194 hours
-#> 3 Other                           2023-07-14 0.6927558 hours
-#> 4 Other                           2023-07-17 2.0909328 hours
-#> 5 Meeting                         2023-07-17 2.4857086 hours
-#> 6 Review                          2023-07-17 1.6879758 hours
+#> # A tibble: 3 × 2
+#>   case_ref_number       spent             
+#>   <chr>                 <drtn>            
+#> 1 tilt#29, architecture 0.4536219445 hours
+#> 2 Other                 0.1040491666 hours
+#> 3 tilt#31, architecture 0.0006816667 hours
+```
 
-# Time spent across all tasks recently
+Time spent across all tasks recently
+
+``` r
 time |>
   summarise(spent = sum(difference), .by = "date") |> 
   tail()
-#> # A tibble: 3 × 2
-#>   date       spent         
-#>   <date>     <drtn>        
-#> 1 2023-07-13 6.215569 hours
-#> 2 2023-07-14 7.692275 hours
-#> 3 2023-07-17 6.264617 hours
+#> # A tibble: 6 × 2
+#>   date       spent          
+#>   <date>     <drtn>         
+#> 1 2023-08-01 6.3057353 hours
+#> 2 2023-08-02 0.7505556 hours
+#> 3 2023-08-03 8.6283528 hours
+#> 4 2023-08-04 2.0020936 hours
+#> 5 2023-08-06 1.8054583 hours
+#> 6 2023-08-07 0.5583528 hours
 ```

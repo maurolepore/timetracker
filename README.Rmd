@@ -59,15 +59,18 @@ time <- timetracker::wrangle(raw)
 tail(time)
 ```
 
-Analyze the data with familiar tidyverse packages.
+Time spent by task recently
 
 ```{r}
-# Time spent by task recently
-time |>
-  summarise(spent = sum(difference), .by = c("case_ref_number", "date")) |> 
+time |> 
+  filter(date >= "2023-08-07") |>
+  summarise(spent = sum(difference), .by = c("case_ref_number")) |> 
   tail()
+```
 
-# Time spent across all tasks recently
+Time spent across all tasks recently
+
+```{r}
 time |>
   summarise(spent = sum(difference), .by = "date") |> 
   tail()
