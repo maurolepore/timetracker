@@ -136,13 +136,12 @@ working_days_per_week = 5
 vacation_days = 30
 hours_per_day = 8
 days_in_year = 365
-# Calculate the total number of working days in a year without vacations
+# in a year without vacations
 total_working_days = weeks_in_year * working_days_per_week
-# Subtract the number of vacation days
+# subtracting vacations
 actual_working_days = total_working_days - vacation_days
-# Calculate the total number of working hours in a year
+# in a year
 total_working_hours = actual_working_days * hours_per_day
-# Calculate the average number of working hours per day
 average_hours_per_day = total_working_hours / days_in_year
 
 .expect <- average_hours_per_day
@@ -151,10 +150,8 @@ average_hours_per_day = total_working_hours / days_in_year
 data |> 
   ggplot(aes(x = date, y = spent)) + 
     geom_col() +
-    # add a line showing the mean
     geom_hline(yintercept = .expect, color = "gray") +
     geom_hline(yintercept = .actual, color = "red") +
-    # label each hour on the y axis
     scale_y_continuous(breaks = seq(0, 24, 1))
 ```
 
