@@ -110,3 +110,35 @@ time |>
 #>   <date>     <drtn>        
 #> 1 2024-06-26 9.930772 hours
 ```
+
+``` r
+library(ggplot2)
+# Bar plot showing hours versus date and line showing average hours
+data <- time |>
+  group_by(date) |>
+  summarise(spent = sum(difference)) |>
+  # Convert spent from difftime to hours
+  mutate(spent = as.numeric(spent, units = "hours")) |> 
+  filter(!date < 2020) |> 
+  filter(spent > 0, spent < 24) |> 
+  arrange(date)
+
+(.mean <- mean(data$spent))
+#> [1] 6.277901
+```
+
+``` r
+
+# How many hours on average should I work each day of the year if I work 5 days a week, 8 hours each day, and have 30 vacation days?
+expect <- 5
+# How many hours do I actually work on average?
+actual <- mean(data$spent)
+
+ggplot(data, aes(x = date, y = spent)) + 
+  geom_col() +
+  # add a line showing the mean
+  geom_hline(yintercept = expect, color = "gray") +
+  geom_hline(yintercept = actual, color = "red")
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
