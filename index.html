@@ -150,22 +150,39 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>spent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">spent</span>, units <span class="op">=</span> <span class="st">"hours"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">date</span> <span class="op">&lt;</span> <span class="fl">2020</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">spent</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">spent</span> <span class="op">&lt;</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">params</span><span class="op">$</span><span class="va">days</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="op">(</span><span class="va">.mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">spent</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 6.277901</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># How many hours on average should I work each day of the year if I work 5 days a week, 8 hours each day, and have 30 vacation days?</span></span>
-<span><span class="va">expect</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
-<span><span class="co"># How many hours do I actually work on average?</span></span>
-<span><span class="va">actual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">spent</span><span class="op">)</span></span>
+<span><span class="va">weeks_in_year</span> <span class="op">=</span> <span class="fl">52</span></span>
+<span><span class="va">working_days_per_week</span> <span class="op">=</span> <span class="fl">5</span></span>
+<span><span class="va">vacation_days</span> <span class="op">=</span> <span class="fl">30</span></span>
+<span><span class="va">hours_per_day</span> <span class="op">=</span> <span class="fl">8</span></span>
+<span><span class="va">days_in_year</span> <span class="op">=</span> <span class="fl">365</span></span>
+<span><span class="co"># Calculate the total number of working days in a year without vacations</span></span>
+<span><span class="va">total_working_days</span> <span class="op">=</span> <span class="va">weeks_in_year</span> <span class="op">*</span> <span class="va">working_days_per_week</span></span>
+<span><span class="co"># Subtract the number of vacation days</span></span>
+<span><span class="va">actual_working_days</span> <span class="op">=</span> <span class="va">total_working_days</span> <span class="op">-</span> <span class="va">vacation_days</span></span>
+<span><span class="co"># Calculate the total number of working hours in a year</span></span>
+<span><span class="va">total_working_hours</span> <span class="op">=</span> <span class="va">actual_working_days</span> <span class="op">*</span> <span class="va">hours_per_day</span></span>
+<span><span class="co"># Calculate the average number of working hours per day</span></span>
+<span><span class="va">average_hours_per_day</span> <span class="op">=</span> <span class="va">total_working_hours</span> <span class="op">/</span> <span class="va">days_in_year</span></span>
 <span></span>
-<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">data</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">spent</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu">geom_col</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># add a line showing the mean</span></span>
-<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">expect</span>, color <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">actual</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">.expect</span> <span class="op">&lt;-</span> <span class="va">average_hours_per_day</span></span>
+<span><span class="va">.actual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">spent</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">data</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">spent</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">geom_col</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="co"># add a line showing the mean</span></span>
+<span>    <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">.expect</span>, color <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">.actual</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="co"># label each hour on the y axis</span></span>
+<span>    <span class="fu">scale_y_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">24</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
 </div>
 </div>
