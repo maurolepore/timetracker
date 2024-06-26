@@ -45,7 +45,7 @@ library(timetracker)
 Read your google sheet with googlesheets4.
 
 ```{r}
-url <- "https://docs.google.com/spreadsheets/d/1Pz9_Dn24DPpWpEXFggSwZJWSp0DHtYbgpeS1_90KtEA/edit?usp=sharing"
+url <- "https://docs.google.com/spreadsheets/d/1yz1j_CuLVwQwkzxW_6kuZH1mCEWuD-n-rCy70aORyc0/edit?usp=sharing"
 raw <- read_sheet(url)
 
 tail(raw)
