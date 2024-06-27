@@ -71,7 +71,7 @@ time |>
   arrange(date) |> 
   slice_tail(n = days) |> 
   summarise(hours = sum(difference), .by = c("team", "case_ref_number", "date")) |> 
-  mutate(task = reorder(case_ref_number, hours)) |> 
+  mutate(task = reorder(case_ref_number, hours)) |>
   ggplot(aes(x = task, y = hours)) + 
     geom_col(aes(fill = team)) +
     coord_flip() +

@@ -81,6 +81,8 @@ tail(time)
 #> 6 2024-06-26 Help Kalash     2024-06-26 13:23:32 2024-06-26 15:11:32 1.79992222…
 ```
 
+Time spent by task in the last 30 days.
+
 ``` r
 days <- 30
 time |>
