@@ -62,21 +62,20 @@ time <- timetracker::wrangle(raw)
 tail(time)
 ```
 
-Last month by task.
-
 ```{r}
-# Time spent by task in the last week
 days <- 30
 time |>
   mutate(team = ifelse(grepl("^st ", case_ref_number), "stress", "tilt")) |>
   arrange(date) |> 
   slice_tail(n = days) |> 
-  summarise(spent = sum(difference), .by = c("team", "case_ref_number", "date")) |> 
-  ggplot(aes(x = reorder(case_ref_number, spent), y = spent)) + 
+  summarise(hours = sum(difference), .by = c("team", "case_ref_number", "date")) |> 
+  mutate(task = reorder(case_ref_number, hours)) |> 
+  ggplot(aes(x = task, y = hours)) + 
     geom_col(aes(fill = team)) +
     coord_flip() +
-    labs(y = "hours") +
-  theme_minimal()
+    ggtitle("Time spent by task in the 30 days") +
+    labs(x = NULL) +
+    theme_minimal()
 ```
 
 Expected vs. actual worked hours in the last `r params$days` days.

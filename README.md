@@ -81,21 +81,22 @@ tail(time)
 #> 6 2024-06-26 Help Kalash     2024-06-26 13:23:32 2024-06-26 15:11:32 1.79992222…
 ```
 
-Last month by task.
-
 ``` r
-# Time spent by task in the last week
 days <- 30
 time |>
   mutate(team = ifelse(grepl("^st ", case_ref_number), "stress", "tilt")) |>
   arrange(date) |> 
   slice_tail(n = days) |> 
   summarise(spent = sum(difference), .by = c("team", "case_ref_number", "date")) |> 
-  ggplot(aes(x = reorder(case_ref_number, spent), y = spent)) + 
+  mutate(task = reorder(case_ref_number, spent)) |> 
+  ggplot(aes(x = task, y = spent)) + 
     geom_col(aes(fill = team)) +
     coord_flip() +
-    labs(y = "hours") +
-  theme_minimal()
+    labs(
+      title = "Hours worked in the last 30 days by task and team",
+      y = "hours"
+    ) +
+    theme_minimal()
 #> Don't know how to automatically pick scale for object of type <difftime>.
 #> Defaulting to continuous.
 ```
