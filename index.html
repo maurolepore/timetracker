@@ -100,7 +100,7 @@
 <span><span class="co">#&gt; 3 tiltWebTool#83 2024-06-26 10:45:33 2024-06-26 13:05:09 02:19:37  </span></span>
 <span><span class="co">#&gt; 4 tiltWebTool#83 2024-06-26 13:21:43 2024-06-26 13:23:31 00:01:48  </span></span>
 <span><span class="co">#&gt; 5 Help Kalash    2024-06-26 13:23:32 2024-06-26 15:11:32 01:48:00  </span></span>
-<span><span class="co">#&gt; 6 &lt;NA&gt;           2024-06-26 15:11:34 NA                  &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; 6 Planning       2024-06-26 15:11:34 2024-06-26 17:12:59 02:01:24</span></span></code></pre></div>
 <p>Wrangle.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu">timetracker</span><span class="fu">::</span><span class="fu"><a href="reference/wrangle.html">wrangle</a></span><span class="op">(</span><span class="va">raw</span><span class="op">)</span></span>
@@ -109,12 +109,12 @@
 <span><span class="co">#&gt; # A tibble: 6 × 5</span></span>
 <span><span class="co">#&gt;   date       case_ref_number start_time          stop_time           difference </span></span>
 <span><span class="co">#&gt;   &lt;date&gt;     &lt;chr&gt;           &lt;dttm&gt;              &lt;dttm&gt;              &lt;drtn&gt;     </span></span>
-<span><span class="co">#&gt; 1 2024-06-25 Review          2024-06-25 09:05:49 2024-06-25 11:18:17 2.20776917…</span></span>
-<span><span class="co">#&gt; 2 2024-06-25 tiltWebTool#79  2024-06-25 11:20:07 2024-06-25 17:52:44 6.54360722…</span></span>
-<span><span class="co">#&gt; 3 2024-06-26 tiltWebTool#91  2024-06-26 04:59:05 2024-06-26 10:45:32 5.77399333…</span></span>
-<span><span class="co">#&gt; 4 2024-06-26 tiltWebTool#83  2024-06-26 10:45:33 2024-06-26 13:05:09 2.32688611…</span></span>
-<span><span class="co">#&gt; 5 2024-06-26 tiltWebTool#83  2024-06-26 13:21:43 2024-06-26 13:23:31 0.02997028…</span></span>
-<span><span class="co">#&gt; 6 2024-06-26 Help Kalash     2024-06-26 13:23:32 2024-06-26 15:11:32 1.79992222…</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 2024-06-25 tiltWebTool#79  2024-06-25 11:20:07 2024-06-25 17:52:44 6.54360722…</span></span>
+<span><span class="co">#&gt; 2 2024-06-26 tiltWebTool#91  2024-06-26 04:59:05 2024-06-26 10:45:32 5.77399333…</span></span>
+<span><span class="co">#&gt; 3 2024-06-26 tiltWebTool#83  2024-06-26 10:45:33 2024-06-26 13:05:09 2.32688611…</span></span>
+<span><span class="co">#&gt; 4 2024-06-26 tiltWebTool#83  2024-06-26 13:21:43 2024-06-26 13:23:31 0.02997028…</span></span>
+<span><span class="co">#&gt; 5 2024-06-26 Help Kalash     2024-06-26 13:23:32 2024-06-26 15:11:32 1.79992222…</span></span>
+<span><span class="co">#&gt; 6 2024-06-26 Planning        2024-06-26 15:11:34 2024-06-26 17:12:59 2.02338333…</span></span></code></pre></div>
 <p>Time spent by task in the last 30 days.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">days</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
@@ -123,7 +123,7 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_tail</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">days</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>hours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">difference</span><span class="op">)</span>, .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"team"</span>, <span class="st">"case_ref_number"</span>, <span class="st">"date"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>task <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">case_ref_number</span>, <span class="va">hours</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>task <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">case_ref_number</span>, <span class="va">hours</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">task</span>, y <span class="op">=</span> <span class="va">hours</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu">geom_col</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="va">team</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -143,7 +143,7 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_tail</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">params</span><span class="op">$</span><span class="va">days</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="op">(</span><span class="va">.mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">spent</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Time difference of 6.277901 hours</span></span></code></pre></div>
+<span><span class="co">#&gt; Time difference of 6.285774 hours</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># How many hours on average should I work each day of the year if I work 5 days a week, 8 hours each day, and have 30 vacation days?</span></span>
