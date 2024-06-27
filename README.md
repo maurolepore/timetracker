@@ -25,11 +25,12 @@ pak::pak("maurolepore/timetracker")
 
 ``` r
 library(dplyr, warn.conflicts = FALSE)
+library(ggplot2, warn.conflicts = FALSE)
 library(googlesheets4)
 library(timetracker)
 ```
 
-Read your google sheet with googlesheets4.
+Raw data.
 
 ``` r
 url <- "https://docs.google.com/spreadsheets/d/1yz1j_CuLVwQwkzxW_6kuZH1mCEWuD-n-rCy70aORyc0/edit?usp=sharing"
@@ -63,7 +64,7 @@ tail(raw)
 #> 6 <NA>           2024-06-26 15:11:34 NA                  <NA>
 ```
 
-Wrangle the data with timetracker.
+Wrangle.
 
 ``` r
 time <- timetracker::wrangle(raw)
@@ -80,52 +81,39 @@ tail(time)
 #> 6 2024-06-26 Help Kalash     2024-06-26 13:23:32 2024-06-26 15:11:32 1.79992222…
 ```
 
-Analyze the data with familiar tidyverse packages.
+Last month by task.
 
 ``` r
 # Time spent by task in the last week
-week <- 7
+days <- 30
 time |>
-  filter(date == tail(unique(date), week)) |>
-  summarise(spent = sum(difference), .by = c("case_ref_number", "date"))
-#> # A tibble: 6 × 3
-#>   case_ref_number      date       spent          
-#>   <chr>                <date>     <drtn>         
-#> 1 Meeting              2024-06-18 1.0004019 hours
-#> 2 tiltWebTool#70       2024-06-19 0.2742353 hours
-#> 3 st setup copilot     2024-06-20 2.0009028 hours
-#> 4 st admin             2024-06-21 1.0031956 hours
-#> 5 tiltWebTool planning 2024-06-24 1.9782328 hours
-#> 6 Help Kalash          2024-06-26 1.7999222 hours
-```
-
-``` r
-
-# Time spent across all tasks the last day
-time |>
-  filter(date == last(date)) |>
-  summarise(spent = sum(difference), .by = "date")
-#> # A tibble: 1 × 2
-#>   date       spent         
-#>   <date>     <drtn>        
-#> 1 2024-06-26 9.930772 hours
-```
-
-``` r
-library(ggplot2)
-# Bar plot showing hours versus date and line showing average hours
-data <- time |>
-  group_by(date) |>
-  summarise(spent = sum(difference)) |>
-  # Convert spent from difftime to hours
-  mutate(spent = as.numeric(spent, units = "hours")) |> 
-  filter(!date < 2020) |> 
-  filter(spent > 0, spent < 24) |> 
+  mutate(team = ifelse(grepl("^st ", case_ref_number), "stress", "tilt")) |>
   arrange(date) |> 
-  tail(as.numeric(params$days))
+  slice_tail(n = days) |> 
+  summarise(spent = sum(difference), .by = c("team", "case_ref_number", "date")) |> 
+  ggplot(aes(x = reorder(case_ref_number, spent), y = spent)) + 
+    geom_col(aes(fill = team)) +
+    coord_flip() +
+    labs(y = "hours") +
+  theme_minimal()
+#> Don't know how to automatically pick scale for object of type <difftime>.
+#> Defaulting to continuous.
+```
+
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+
+Expected vs. actual worked hours in the last Inf days.
+
+``` r
+data <- time |>
+  summarise(spent = sum(difference), .by = "date") |>
+  # Remove invalid
+  filter(!date < 1900, spent > 0, spent < 24) |> 
+  arrange(date) |> 
+  slice_tail(n = as.numeric(params$days))
 
 (.mean <- mean(data$spent))
-#> [1] 6.277901
+#> Time difference of 6.277901 hours
 ```
 
 ``` r
