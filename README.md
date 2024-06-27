@@ -61,7 +61,7 @@ tail(raw)
 #> 3 tiltWebTool#83 2024-06-26 10:45:33 2024-06-26 13:05:09 02:19:37  
 #> 4 tiltWebTool#83 2024-06-26 13:21:43 2024-06-26 13:23:31 00:01:48  
 #> 5 Help Kalash    2024-06-26 13:23:32 2024-06-26 15:11:32 01:48:00  
-#> 6 <NA>           2024-06-26 15:11:34 NA                  <NA>
+#> 6 Planning       2024-06-26 15:11:34 2024-06-26 17:12:59 02:01:24
 ```
 
 Wrangle.
@@ -73,12 +73,12 @@ tail(time)
 #> # A tibble: 6 × 5
 #>   date       case_ref_number start_time          stop_time           difference 
 #>   <date>     <chr>           <dttm>              <dttm>              <drtn>     
-#> 1 2024-06-25 Review          2024-06-25 09:05:49 2024-06-25 11:18:17 2.20776917…
-#> 2 2024-06-25 tiltWebTool#79  2024-06-25 11:20:07 2024-06-25 17:52:44 6.54360722…
-#> 3 2024-06-26 tiltWebTool#91  2024-06-26 04:59:05 2024-06-26 10:45:32 5.77399333…
-#> 4 2024-06-26 tiltWebTool#83  2024-06-26 10:45:33 2024-06-26 13:05:09 2.32688611…
-#> 5 2024-06-26 tiltWebTool#83  2024-06-26 13:21:43 2024-06-26 13:23:31 0.02997028…
-#> 6 2024-06-26 Help Kalash     2024-06-26 13:23:32 2024-06-26 15:11:32 1.79992222…
+#> 1 2024-06-25 tiltWebTool#79  2024-06-25 11:20:07 2024-06-25 17:52:44 6.54360722…
+#> 2 2024-06-26 tiltWebTool#91  2024-06-26 04:59:05 2024-06-26 10:45:32 5.77399333…
+#> 3 2024-06-26 tiltWebTool#83  2024-06-26 10:45:33 2024-06-26 13:05:09 2.32688611…
+#> 4 2024-06-26 tiltWebTool#83  2024-06-26 13:21:43 2024-06-26 13:23:31 0.02997028…
+#> 5 2024-06-26 Help Kalash     2024-06-26 13:23:32 2024-06-26 15:11:32 1.79992222…
+#> 6 2024-06-26 Planning        2024-06-26 15:11:34 2024-06-26 17:12:59 2.02338333…
 ```
 
 Time spent by task in the last 30 days.
@@ -90,7 +90,7 @@ time |>
   arrange(date) |> 
   slice_tail(n = days) |> 
   summarise(hours = sum(difference), .by = c("team", "case_ref_number", "date")) |> 
-  mutate(task = reorder(case_ref_number, hours)) |> 
+  mutate(task = reorder(case_ref_number, hours)) |>
   ggplot(aes(x = task, y = hours)) + 
     geom_col(aes(fill = team)) +
     coord_flip() +
@@ -114,7 +114,7 @@ data <- time |>
   slice_tail(n = as.numeric(params$days))
 
 (.mean <- mean(data$spent))
-#> Time difference of 6.277901 hours
+#> Time difference of 6.285774 hours
 ```
 
 ``` r
