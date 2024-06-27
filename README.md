@@ -87,21 +87,19 @@ time |>
   mutate(team = ifelse(grepl("^st ", case_ref_number), "stress", "tilt")) |>
   arrange(date) |> 
   slice_tail(n = days) |> 
-  summarise(spent = sum(difference), .by = c("team", "case_ref_number", "date")) |> 
-  mutate(task = reorder(case_ref_number, spent)) |> 
-  ggplot(aes(x = task, y = spent)) + 
+  summarise(hours = sum(difference), .by = c("team", "case_ref_number", "date")) |> 
+  mutate(task = reorder(case_ref_number, hours)) |> 
+  ggplot(aes(x = task, y = hours)) + 
     geom_col(aes(fill = team)) +
     coord_flip() +
-    labs(
-      title = "Hours worked in the last 30 days by task and team",
-      y = "hours"
-    ) +
+    ggtitle("Time spent by task in the 30 days") +
+    labs(x = NULL) +
     theme_minimal()
 #> Don't know how to automatically pick scale for object of type <difftime>.
 #> Defaulting to continuous.
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="90%" />
 
 Expected vs. actual worked hours in the last Inf days.
 
@@ -144,4 +142,4 @@ data |>
     scale_y_continuous(breaks = seq(0, 24, 1))
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="90%" />
